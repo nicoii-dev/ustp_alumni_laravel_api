@@ -16,6 +16,14 @@ return new class extends Migration
             $table->string('course');
             $table->timestamps();
         });
+
+        // Insert some stuff
+        DB::table('courses')->insert(
+            array(
+                'id' => '1',
+                'course' => 'Bachelor of Science in Information Technology',
+            )
+        );
     }
 
     /**

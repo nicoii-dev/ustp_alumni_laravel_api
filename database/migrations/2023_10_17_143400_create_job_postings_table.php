@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('job_postings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->unsigned()->nullable()->onDelete('set null');
             $table->string('title')->nullable();
-            $table->longText('job_')->nullable();
+            $table->longText('description')->nullable();
             $table->binary('images')->nullable();
             $table->timestamps();
         });

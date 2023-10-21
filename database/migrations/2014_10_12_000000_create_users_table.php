@@ -17,13 +17,14 @@ return new class extends Migration
             $table->string('middle_name');
             $table->string('last_name');
             $table->string('gender');
-            $table->integer('phone_number');
+            $table->string('phone_number');
             $table->date('dob');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('role');
             $table->string('status');
+            $table->string('is_verified');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -36,9 +37,10 @@ return new class extends Migration
                 'last_name' => 'admin',
                 'gender' => 'Male',
                 'phone_number' => '09751234567',
-                'dob' => '01/01/2000',
+                'dob' => '2000/01/01',
                 'role' => 'admin',
                 'status' => '1',
+                'is_verified' => '1',
                 'email' => 'admin@admin.com',
                 'password' => bcrypt('Default123'),
             )
