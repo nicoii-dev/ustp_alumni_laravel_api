@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->unsigned()->nullable()->references('id')->on('users')->onDelete('cascade');
             $table->longText('title')->nullable();
             $table->binary('images')->nullable();
+            $table->string('likes')->nullable();
             $table->timestamps();
         });
     }

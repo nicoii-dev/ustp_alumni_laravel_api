@@ -30,6 +30,7 @@ class PostController extends Controller
             'user_id' => Auth::user()->id,
             'title' => $request['title'],
             'images' => $request['images'],
+            'likes' => 0
         ]);
 
         return response()->json(["message" => "Created successfully."], 200);

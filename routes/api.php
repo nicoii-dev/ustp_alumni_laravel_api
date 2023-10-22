@@ -57,8 +57,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
         Route::group(['prefix' => 'likes'], function () {
             Route::get('/', 'LikeController@index');
-            Route::post('create', 'LikeController@store');
-            Route::post('update/{id}', 'LikeController@update');
+            Route::get('post/{id}', 'LikeController@showPostLikes');
+            Route::post('like-post', 'LikeController@likePost');
+            Route::post('unlike-post', 'LikeController@unLikePost');
         });
 
         Route::group(['prefix' => 'job-posting'], function () {
@@ -75,6 +76,22 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::post('view/{id}', 'CourseController@show');
             Route::post('update/{id}', 'CourseController@update');
             Route::delete('delete/{id}', 'CourseController@destroy');
+        });
+
+        Route::group(['prefix' => 'employment'], function () {
+            Route::get('/', 'EmploymentController@index');
+            Route::post('create', 'EmploymentController@store');
+            Route::post('view/{id}', 'EmploymentController@show');
+            Route::post('update/{id}', 'EmploymentController@update');
+            Route::delete('delete/{id}', 'EmploymentController@destroy');
+        });
+
+        Route::group(['prefix' => 'training'], function () {
+            Route::get('/', 'TrainingController@index');
+            Route::post('create', 'TrainingController@store');
+            Route::post('view/{id}', 'TrainingController@show');
+            Route::post('update/{id}', 'TrainingController@update');
+            Route::delete('delete/{id}', 'TrainingController@destroy');
         });
 
         Route::group(['prefix' => 'dashboard'], function () {

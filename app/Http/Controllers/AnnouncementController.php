@@ -75,7 +75,6 @@ class AnnouncementController extends Controller
     public function destroy(string $id)
     {
         if(DB::table("announcements")->where('id',$id)->delete()){
-            $announcement = DB::table('announcements')->get();
             return response()->json(["message" => "Deleted successfully."], 200);
         }else{
             return response()->json(["message" => "Something went wrong. Unable to delete."], 500);
