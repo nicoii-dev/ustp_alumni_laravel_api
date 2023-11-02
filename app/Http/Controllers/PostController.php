@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\PostImages;
 
 class PostController extends Controller
 {
@@ -13,8 +15,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $post = Post::all();
-        return response()->json(["data" => $post], 200);
+        $post = Post::with('postImages')->with('postOwner')->orderBy('created_at', 'desc')->with('postLikes')->get();
+        return response()->json($post, 200);
     }
 
     /**
@@ -25,15 +27,21 @@ class PostController extends Controller
         // $request->validate([
         //     'title' => 'required|unique:posts,title'
         // ]);
+        $post = new Post();
+        $post->user_id = Auth::user()->id;
+        $post->title = $request->title;
+        $post->likes = 0;
+        $post->save();
 
-        Post::create([
-            'user_id' => Auth::user()->id,
-            'title' => $request['title'],
-            'images' => $request['images'],
-            'likes' => 0
-        ]);
-
+        foreach ($request->file('images') as $imagefile) {
+            $image = new PostImages();
+            $image->post_id = $post->id;
+            $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+            $image->url = $path;
+            $image->save();
+        }
         return response()->json(["message" => "Created successfully."], 200);
+
     }
 
     /**
@@ -42,7 +50,7 @@ class PostController extends Controller
     public function show(string $id)
     {
         $post = Post::find($id);
-        return response()->json(["data" => $post], 200);
+        return response()->json($post, 200);
     }
 
     /**
@@ -50,22 +58,22 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // $request->validate([
-        //     'title' => 'required'
-        // ]);
-
-        // $announcement = Announcement::where('title', $request['title'])
-        // ->where('id', '!=', $id)
-        // ->first();
-        // if($announcement !== null) {
-        //     return response()->json(["message" => "This title is already been taken."], 422);
-        // };
-
-        Post::where('id', $id)->update([
-            'title' => $request['title'],
-            'images' => $request['images'],
-        ]);
+        // delete previous images
+        DB::table('post_images')->where('post_id', $id)->delete();
+        
         $post = Post::find($id);
+        $post->title = $request->title;
+        $post->save();
+
+        // add new images
+        foreach ($request->file('images') as $imagefile) {
+            $image = new PostImages();
+            $image->post_id = $post->id;
+            $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+            $image->url = $path;
+            $image->save();
+        }
+        $post = Post::find($id)->with('postImages')->with('postOwner')->with('postLikes')->get();
         return response()->json(["message" => "Updated successfully.", "data" => $post], 200);
     }
 
@@ -75,7 +83,6 @@ class PostController extends Controller
     public function destroy(string $id)
     {
         if(DB::table("posts")->where('id',$id)->delete()){
-            $announcement = DB::table('posts')->get();
             return response()->json(["message" => "Deleted successfully."], 200);
         }else{
             return response()->json(["message" => "Something went wrong. Unable to delete."], 500);

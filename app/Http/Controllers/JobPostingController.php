@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\JobPosting;
+use App\Models\JobPostingImages;
 
 class JobPostingController extends Controller
 {
@@ -13,8 +14,8 @@ class JobPostingController extends Controller
      */
     public function index()
     {
-        $jobs = JobPosting::all();
-        return response()->json(["data" => $jobs], 200);
+        $post = JobPosting::with('jobImages')->orderBy('created_at', 'desc')->get();
+        return response()->json($post, 200);
     }
 
     /**
@@ -22,18 +23,18 @@ class JobPostingController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|unique:job_postings,title',
-            'description' => 'required',
-            'images' => 'required'
-        ]);
+        $job = new JobPosting();
+        $job->title = $request->title;
+        $job->description = $request->description;
+        $job->save();
 
-        JobPosting::create([
-            'title' => $request['title'],
-            'description' => $request['description'],
-            'images' => $request['images'],
-        ]);
-
+        foreach ($request->file('images') as $imagefile) {
+            $image = new JobPostingImages();
+            $image->job_posting_id = $job->id;
+            $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+            $image->url = $path;
+            $image->save();
+        }
         return response()->json(["message" => "Created successfully."], 200);
     }
 
@@ -43,7 +44,7 @@ class JobPostingController extends Controller
     public function show(string $id)
     {
         $job = JobPosting::find($id);
-        return response()->json(["data" => $job], 200);
+        return response()->json($job, 200);
     }
 
     /**
@@ -51,22 +52,29 @@ class JobPostingController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'title' => 'required'
-        ]);
 
-        $jobs = JobPosting::where('title', $request['title'])
+        $job = JobPosting::where('title', $request['title'])
         ->where('id', '!=', $id)
         ->first();
-        if($jobs !== null) {
+        if($job !== null) {
             return response()->json(["message" => "This title is already been taken."], 422);
         };
+        // delete previous images
+        DB::table('job_posting_images')->where('job_posting_id', $id)->delete();
+        
+        $job = JobPosting::find($id);
+        $job->title = $request->title;
+        $job->description = $request->description;
+        $job->save();
 
-        JobPosting::where('id', $id)->update([
-            'title' => $request['title'],
-            'description' => $request['description'],
-            'images' => $request['images'],
-        ]);
+        foreach ($request->file('images') as $imagefile) {
+            $image = new JobPostingImages();
+            $image->job_posting_id = $job->id;
+            $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+            $image->url = $path;
+            $image->save();
+        }
+
         $jobs = JobPosting::find($id);
         return response()->json(["message" => "Updated successfully.", "data" => $jobs], 200);
     }

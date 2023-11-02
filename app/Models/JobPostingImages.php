@@ -5,15 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Alumni extends Model
+class JobPostingImages extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'first_name',
-        'middle_name',
-        'last_name',
-        'course',
-        'year_graduated'
+        'job_posting_id',
+        'url',
     ];
 }

@@ -14,7 +14,7 @@ class EmploymentController extends Controller
     public function index()
     {
         $employment = Employment::all();
-        return response()->json(["data" => $employment], 200);
+        return response()->json( $employment, 200);
     }
 
     /**
@@ -41,7 +41,7 @@ class EmploymentController extends Controller
     public function show(string $id)
     {
         $employment = Employment::find($id);
-        return response()->json(["data" => $employment], 200);
+        return response()->json($employment, 200);
     }
 
     /**

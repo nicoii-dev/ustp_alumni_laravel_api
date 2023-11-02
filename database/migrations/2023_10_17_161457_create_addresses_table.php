@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('barangay');
             $table->string('city_municipality');
             $table->string('province');
-            $table->string('region');
             $table->string('zipcode');
             $table->timestamps();
         });

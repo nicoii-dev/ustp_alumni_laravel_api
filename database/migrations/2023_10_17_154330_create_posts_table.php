@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->unsigned()->nullable()->references('id')->on('users')->onDelete('cascade');
             $table->longText('title')->nullable();
-            $table->binary('images')->nullable();
             $table->string('likes')->nullable();
+            $table->boolean('showPost')->nullable()->default(1);
             $table->timestamps();
         });
     }

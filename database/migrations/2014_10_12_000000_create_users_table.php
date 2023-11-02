@@ -17,14 +17,15 @@ return new class extends Migration
             $table->string('middle_name');
             $table->string('last_name');
             $table->string('gender');
+            $table->string('civil_status')->nullable();
             $table->string('phone_number');
-            $table->date('dob');
+            $table->date('dob')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('role');
-            $table->string('status');
-            $table->string('is_verified');
+            $table->boolean('status')->default(1);
+            $table->boolean('is_verified')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -36,6 +37,7 @@ return new class extends Migration
                 'middle_name' => 'admin',
                 'last_name' => 'admin',
                 'gender' => 'Male',
+                'civil_status' => 'Single',
                 'phone_number' => '09751234567',
                 'dob' => '2000/01/01',
                 'role' => 'admin',

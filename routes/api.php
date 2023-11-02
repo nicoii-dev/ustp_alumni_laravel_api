@@ -45,6 +45,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::post('view/{id}', 'PostController@show');
             Route::post('update/{id}', 'PostController@update');
             Route::delete('delete/{id}', 'PostController@destroy');
+            // Route::get('image/{filename}', 'PostController@showPostImage');
         });
 
         Route::group(['prefix' => 'comment'], function () {
@@ -59,15 +60,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/', 'LikeController@index');
             Route::get('post/{id}', 'LikeController@showPostLikes');
             Route::post('like-post', 'LikeController@likePost');
-            Route::post('unlike-post', 'LikeController@unLikePost');
+            Route::post('unlike-post/{id}', 'LikeController@unLikePost');
         });
 
         Route::group(['prefix' => 'job-posting'], function () {
-            Route::get('/', 'JobPostingController@index');
-            Route::post('create', 'JobPostingController@store');
-            Route::post('view/{id}', 'JobPostingController@show');
-            Route::post('update/{id}', 'JobPostingController@update');
-            Route::delete('delete/{id}', 'JobPostingController@destroy');
+            Route::get('/', 'JobPostingController@index')->middleware('cors');
+            Route::post('create', 'JobPostingController@store')->middleware('cors');
+            Route::post('view/{id}', 'JobPostingController@show')->middleware('cors');
+            Route::post('update/{id}', 'JobPostingController@update')->middleware('cors');
+            Route::delete('delete/{id}', 'JobPostingController@destroy')->middleware('cors');
         });
 
         Route::group(['prefix' => 'course'], function () {
@@ -92,6 +93,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::post('view/{id}', 'TrainingController@show');
             Route::post('update/{id}', 'TrainingController@update');
             Route::delete('delete/{id}', 'TrainingController@destroy');
+        });
+
+        Route::group(['prefix' => 'alumni'], function () {
+            Route::get('/', 'AlumniController@index');
+            Route::post('import-csv', 'AlumniController@importCSV');
         });
 
         Route::group(['prefix' => 'dashboard'], function () {

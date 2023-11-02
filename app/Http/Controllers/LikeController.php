@@ -15,13 +15,13 @@ class LikeController extends Controller
     public function index()
     {
         $likes = Like::all();
-        return response()->json(["data" => $likes], 200);
+        return response()->json($likes, 200);
     }
 
     public function showPostLikes(Request $request, string $id)
     {
         $likes = Post::where('id', $id)->first();
-        return response()->json(["data" => $likes], 200);
+        return response()->json($likes, 200);
     }
 
     /**
@@ -32,7 +32,6 @@ class LikeController extends Controller
         $request->validate([
             'post_id' => 'required',
         ]);
-
         Like::create([
             'user_id' => Auth::user()->id,
             'post_id' => $request['post_id'],
@@ -46,11 +45,10 @@ class LikeController extends Controller
         return response()->json(["message" => "Created successfully."], 200);
     }
 
-    public function unLikePost(Request $request)
+    public function unLikePost(Request $request, $id)
     {
 
         $request->validate([
-            'like_id' => 'required',
             'post_id' => 'required',
         ]);
 
@@ -59,7 +57,7 @@ class LikeController extends Controller
             'likes' => $postLikes->likes - 1,
         ]);
 
-        if(DB::table("likes")->where('id', $request['like_id'])->delete()){
+        if(DB::table("likes")->where('id', $id)->delete()){
             return response()->json(["message" => "Unlike successfully."], 200);
         }else{
             return response()->json(["message" => "Something went wrong. Unable to unlike."], 500);

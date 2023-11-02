@@ -8,73 +8,60 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Mail\VerifyEmail;
 use App\Models\User;
+use App\Models\Alumni;
 use App\Models\Address;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'first_name' => 'required|string|max:255',
             'middle_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
-            'civil_status' => 'required|string|max:255',
             'phone_number' => 'required|string|max:255',
-            'dob' => 'required|string|max:255',
-            'role' => 'required|string|max:255',
-            'street' => 'required|string|max:255',
-            'barangay' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'province' => 'required|string|max:255',
-            'region' => 'required|string|max:255',
-            'zipcode' => 'required|string|max:255',
-
+            // 'civil_status' => 'required|string|max:255',
+            // 'dob' => 'required|string|max:255',
+            // 'street' => 'required|string|max:255',
+            // 'barangay' => 'required|string|max:255',
+            // 'city' => 'required|string|max:255',
+            // 'province' => 'required|string|max:255',
+            // 'zipcode' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'password_confirmation' => 'required|string|min:6',
         ]);
-        if($validatedData){
-           try {
-                DB::beginTransaction();
-                $user = new User();
-                $user->first_name = $request->first_name;
-                $user->middle_name = $request->middle_name;
-                $user->last_name = $request->last_name;
-                $user->civil_status = $request->civil_status;
-                $user->gender = $request->gender;
-                $user->phone_number = $request->phone_number;
-                $user->dob = $request->dob;
-                $user->role = $request->role;
-                $user->is_verified = 0;
-                $user->status = 1;
-                $user->email = $request->email;
-                $user->password = bcrypt($request->password);
-                $user->save();
 
-                $address = new Address();
-                $address->user_id = $user->id;
-                $address->street = $request->street;
-                $address->barangay = $request->barangay;
-                $address->city_municipality = $request->city;
-                $address->province = $request->province;
-                $address->region = $request->region;
-                $address->zipcode = $request->zipcode;
-                $address->save();
+        $alumniData = Alumni::where('first_name', $request['first_name'])
+        ->where('middle_name', $request['middle_name'])
+        ->where('last_name', $request['last_name'])
+        ->first();
 
-                $token = $user->createToken('MyApp')->plainTextToken;
-                $link = "http://localhost:3000/verify/$user->email/token=$token";
-                Mail::to($user->email)->send(new VerifyEmail($user, $link));
-                DB::commit();
-                return response()->json([
-                    "message" => "Register successfully"
-                ], 200);
-            }catch(\Exception $e)
-           {
-              DB::rollBack();
-              return response()->json(throw $e);
-           }
+        if($alumniData == null) {
+            return response()->json(["message" => "No Alumni Record"], 500);
+        } else {
+            $alumni = User::create([
+                'first_name' => $request['first_name'],
+                'middle_name' => $request['middle_name'],
+                'last_name' => $request['last_name'],
+                'gender' => $request['gender'],
+                'phone_number' => $request['phone_number'],
+                'email' => $request['email'],
+                'password' => bcrypt($request['password']),
+                'role' => 'user',
+                'status' => 1,
+                'is_verified' => 0
+            ]);
+            $token = $alumni->createToken('MyApp')->plainTextToken;
+            $link = "http://localhost:3000/verify/$alumni->email/token=$token";
+            Mail::to($alumni->email)->send(new VerifyEmail($alumni, $link));
+            DB::commit();
+            return response()->json([
+                "message" => "Register successfully"
+            ], 200);
         }
+
     }
 
     public function login(Request $request) {

@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('alumnis', function (Blueprint $table) {
+        Schema::create('post_images', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('middle_name');
-            $table->string('last_name');
-            $table->string('course');
-            $table->string('year_graduated');
+            $table->foreignId('post_id')->unsigned()->nullable()->references('id')->on('posts')->onDelete('cascade');
+            $table->string('url');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('alumnis');
+        Schema::dropIfExists('post_images');
     }
 };

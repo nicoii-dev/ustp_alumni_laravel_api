@@ -14,7 +14,7 @@ class TrainingController extends Controller
     public function index()
     {
         $training = Training::all();
-        return response()->json(["data" => $training], 200);
+        return response()->json($training, 200);
     }
 
     /**
@@ -51,7 +51,7 @@ class TrainingController extends Controller
     public function show(string $id)
     {
         $training = Training::find($id);
-        return response()->json(["data" => $training], 200);
+        return response()->json($training, 200);
     }
 
     /**

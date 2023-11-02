@@ -14,7 +14,7 @@ class CommentController extends Controller
     public function index()
     {
         $comments = Comment::all();
-        return response()->json(["data" => $comments], 200);
+        return response()->json($comments, 200);
     }
 
     /**
@@ -43,7 +43,7 @@ class CommentController extends Controller
     public function show(string $id)
     {
         $comment = Comment::find($id);
-        return response()->json(["data" => $comment], 200);
+        return response()->json($comment, 200);
     }
 
     /**

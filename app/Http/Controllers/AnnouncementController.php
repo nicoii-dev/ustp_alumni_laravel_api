@@ -14,7 +14,7 @@ class AnnouncementController extends Controller
     public function index()
     {
         $announcement = Announcement::all();
-        return response()->json(["data" => $announcement], 200);
+        return response()->json($announcement, 200);
     }
 
     /**
@@ -41,7 +41,7 @@ class AnnouncementController extends Controller
     public function show(string $id)
     {
         $announcement = Announcement::find($id);
-        return response()->json(["data" => $announcement], 200);
+        return response()->json($announcement, 200);
     }
 
     /**

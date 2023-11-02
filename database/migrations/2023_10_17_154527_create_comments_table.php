@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->unsigned()->nullable()->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('post_id')->unsigned()->nullable()->references('id')->on('posts')->onDelete('cascade');
             $table->longText('comment')->nullable();
+            $table->boolean('showComment')->nullable()->default(0);
             $table->binary('images')->nullable();
             $table->timestamps();
         });

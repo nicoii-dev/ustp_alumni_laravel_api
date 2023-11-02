@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class UserController extends Controller
@@ -44,6 +46,18 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function updateProfile(string $id)
+    {
+        Address::create([
+            'user_id' => Auth::user()->id,
+            'street' => $request['street'],
+            'barangay' => $request['barangay'],
+            'city_municipality' => $request['city_municipality'],
+            'province' => $request['province'],
+            'zipcode' => $request['zipcode'],
+        ]);
     }
 
     public function activateUser($id)
