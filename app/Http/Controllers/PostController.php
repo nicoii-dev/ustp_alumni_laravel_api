@@ -32,14 +32,16 @@ class PostController extends Controller
         $post->title = $request->title;
         $post->likes = 0;
         $post->save();
-
-        foreach ($request->file('images') as $imagefile) {
-            $image = new PostImages();
-            $image->post_id = $post->id;
-            $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
-            $image->url = $path;
-            $image->save();
+        if($request->hasFile('images')) {
+            foreach ($request->file('images') as $imagefile) {
+                $image = new PostImages();
+                $image->post_id = $post->id;
+                $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+                $image->url = $path;
+                $image->save();
+            }
         }
+
         return response()->json(["message" => "Created successfully."], 200);
 
     }
@@ -66,12 +68,14 @@ class PostController extends Controller
         $post->save();
 
         // add new images
-        foreach ($request->file('images') as $imagefile) {
-            $image = new PostImages();
-            $image->post_id = $post->id;
-            $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
-            $image->url = $path;
-            $image->save();
+        if($request->hasFile('images')) {
+            foreach ($request->file('images') as $imagefile) {
+                $image = new PostImages();
+                $image->post_id = $post->id;
+                $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+                $image->url = $path;
+                $image->save();
+            }
         }
         $post = Post::find($id)->with('postImages')->with('postOwner')->with('postLikes')->get();
         return response()->json(["message" => "Updated successfully.", "data" => $post], 200);

@@ -64,11 +64,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         });
 
         Route::group(['prefix' => 'job-posting'], function () {
-            Route::get('/', 'JobPostingController@index')->middleware('cors');
-            Route::post('create', 'JobPostingController@store')->middleware('cors');
-            Route::post('view/{id}', 'JobPostingController@show')->middleware('cors');
-            Route::post('update/{id}', 'JobPostingController@update')->middleware('cors');
-            Route::delete('delete/{id}', 'JobPostingController@destroy')->middleware('cors');
+            Route::get('/', 'JobPostingController@index');
+            Route::post('create', 'JobPostingController@store');
+            Route::post('view/{id}', 'JobPostingController@show');
+            Route::post('update/{id}', 'JobPostingController@update');
+            Route::delete('delete/{id}', 'JobPostingController@destroy');
         });
 
         Route::group(['prefix' => 'course'], function () {
