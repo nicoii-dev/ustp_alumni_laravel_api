@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Announcement;
+use App\Models\AnnouncementImages;
 
 class AnnouncementController extends Controller
 {
@@ -13,7 +14,7 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
-        $announcement = Announcement::all();
+        $announcement = Announcement::with('announcementImages')->orderBy('created_at', 'desc')->get();
         return response()->json($announcement, 200);
     }
 
@@ -22,17 +23,32 @@ class AnnouncementController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|unique:announcements,title'
+        $validatedData = $request->validate([
+            'title' => 'required|string|unique:announcements,title',
+            'announcement' => 'required'
         ]);
-
-        Announcement::create([
-            'title' => $request['title'],
-            'announcement' => $request['announcement'],
-            'images' => $request['images'],
-        ]);
-        $announcement = DB::table('announcements')->get();
-        return response()->json(["message" => "Created successfully."], 200);
+        if($validatedData){
+            try {
+            $announcement = new Announcement();
+            $announcement->title = $request->title;
+            $announcement->announcement = $request->announcement;
+            $announcement->save();
+            if($request->hasFile('images')) {
+                foreach ($request->file('images') as $imagefile) {
+                    $image = new AnnouncementImages();
+                    $image->announcement_id = $announcement->id;
+                    $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+                    $image->url = $path;
+                    $image->save();
+                }
+            }
+            return response()->json(["message" => "Created successfully."], 200);
+            } catch(\Exception $e)
+            {
+                DB::rollBack();
+                return response()->json(throw $e);
+            }
+        }
     }
 
     /**
@@ -49,24 +65,44 @@ class AnnouncementController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'title' => 'required'
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'announcement' => 'required'
         ]);
-
-        $announcement = Announcement::where('title', $request['title'])
-        ->where('id', '!=', $id)
-        ->first();
-        if($announcement !== null) {
-            return response()->json(["message" => "This title is already been taken."], 422);
-        };
-
-        Announcement::where('id', $id)->update([
-            'title' => $request['title'],
-            'announcement' => $request['announcement'],
-            'images' => $request['images'],
-        ]);
-        $announcement = Announcement::find($id);
-        return response()->json(["message" => "Updated successfully.", "data" => $announcement], 200);
+        if($validatedData){
+            $announcements = Announcement::where('title', $request['title'])
+            ->where('id', '!=', $id)
+            ->first();
+            if($announcements != null) {
+                return response()->json(["message" => "This title is already been taken."], 422);
+            } else {
+                // delete previous images
+                if($request->has('imagesToDelete')) {
+                    DB::table('announcement_images')->whereIn('id', $request['imagesToDelete'])->delete();
+                }
+                try {
+                    $announcement = Announcement::find($id);
+                    $announcement->title = $request->title;
+                    $announcement->announcement = $request->announcement;
+                    $announcement->save();
+                    if($request->hasFile('images')) {
+                        foreach ($request->file('images') as $imagefile) {
+                            $image = new AnnouncementImages();
+                            $image->announcement_id = $announcement->id;
+                            $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+                            $image->url = $path;
+                            $image->save();
+                        }
+                    }
+                    $announcements = Announcement::find($id);
+                    return response()->json(["message" => "Updated successfully.", "data" => $announcements], 200);
+                }catch(\Exception $e)
+                {
+                    DB::rollBack();
+                    return response()->json(throw $e);
+                }
+            }
+        }
     }
 
     /**

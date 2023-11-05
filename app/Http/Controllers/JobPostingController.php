@@ -23,20 +23,31 @@ class JobPostingController extends Controller
      */
     public function store(Request $request)
     {
-        $job = new JobPosting();
-        $job->title = $request->title;
-        $job->description = $request->description;
-        $job->save();
-        if($request->hasFile('images')) {
-            foreach ($request->file('images') as $imagefile) {
-                $image = new JobPostingImages();
-                $image->job_posting_id = $job->id;
-                $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
-                $image->url = $path;
-                $image->save();
+        $validatedData = $request->validate([
+            'title' => 'required|string|unique:job_postings,title'
+        ]);
+        if($validatedData){
+            try {
+            $job = new JobPosting();
+            $job->title = $request->title;
+            $job->description = $request->description;
+            $job->save();
+            if($request->hasFile('images')) {
+                foreach ($request->file('images') as $imagefile) {
+                    $image = new JobPostingImages();
+                    $image->job_posting_id = $job->id;
+                    $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+                    $image->url = $path;
+                    $image->save();
+                }
+            }
+            return response()->json(["message" => "Created successfully."], 200);
+            } catch(\Exception $e)
+            {
+                DB::rollBack();
+                return response()->json(throw $e);
             }
         }
-        return response()->json(["message" => "Created successfully."], 200);
     }
 
     /**
@@ -53,38 +64,41 @@ class JobPostingController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'title' => 'required',
         ]);
-
-        $jobs = JobPosting::where('title', $request['title'])
-        ->where('id', '!=', $id)
-        ->first();
-        if($jobs != null) {
-            return response()->json(["message" => "This title is already been taken."], 422);
-        } else {
-            try {
-                $job = JobPosting::find($id);
-                $job->title = $request->title;
-                $job->description = $request->description;
-                $job->save();
-                if($request->hasFile('images')) {
-                    // delete previous images
-                    DB::table('job_posting_images')->where('job_posting_id', $id)->delete();
-                    foreach ($request->file('images') as $imagefile) {
-                        $image = new JobPostingImages();
-                        $image->job_posting_id = $job->id;
-                        $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
-                        $image->url = $path;
-                        $image->save();
-                    }
+        if($validatedData){
+            $jobs = JobPosting::where('title', $request['title'])
+            ->where('id', '!=', $id)
+            ->first();
+            if($jobs != null) {
+                return response()->json(["message" => "This title is already been taken."], 422);
+            } else {
+                // delete previous images
+                if($request->has('imagesToDelete')) {
+                    DB::table('job_posting_images')->whereIn('id', $request['imagesToDelete'])->delete();
                 }
-                $jobs = JobPosting::find($id);
-                return response()->json(["message" => "Updated successfully.", "data" => $jobs], 200);
-            }catch(\Exception $e)
-            {
-                DB::rollBack();
-                return response()->json(throw $e);
+                try {
+                    $job = JobPosting::find($id);
+                    $job->title = $request->title;
+                    $job->description = $request->description;
+                    $job->save();
+                    if($request->hasFile('images')) {
+                        foreach ($request->file('images') as $imagefile) {
+                            $image = new JobPostingImages();
+                            $image->job_posting_id = $job->id;
+                            $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+                            $image->url = $path;
+                            $image->save();
+                        }
+                    }
+                    $jobs = JobPosting::find($id);
+                    return response()->json(["message" => "Updated successfully.", "data" => $jobs], 200);
+                }catch(\Exception $e)
+                {
+                    DB::rollBack();
+                    return response()->json(throw $e);
+                }
             }
         }
     }

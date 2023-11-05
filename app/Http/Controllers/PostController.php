@@ -41,9 +41,7 @@ class PostController extends Controller
                 $image->save();
             }
         }
-
         return response()->json(["message" => "Created successfully."], 200);
-
     }
 
     /**
@@ -60,9 +58,9 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // delete previous images
-        DB::table('post_images')->where('post_id', $id)->delete();
-        
+        if($request->has('imagesToDelete')) {
+            DB::table('post_images')->whereIn('id', $request['imagesToDelete'])->delete();
+        }
         $post = Post::find($id);
         $post->title = $request->title;
         $post->save();
