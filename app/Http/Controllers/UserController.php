@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Address;
 
 class UserController extends Controller
 {
@@ -48,16 +49,36 @@ class UserController extends Controller
         //
     }
 
-    public function updateProfile(string $id)
+    public function addProfileAddress(Request $request)
     {
-        Address::create([
-            'user_id' => Auth::user()->id,
-            'street' => $request['street'],
-            'barangay' => $request['barangay'],
-            'city_municipality' => $request['city_municipality'],
-            'province' => $request['province'],
-            'zipcode' => $request['zipcode'],
+        $validatedData = $request->validate([
+            'civil_status' => 'required',
+            'dob' => 'required',
+            'street' => 'required',
+            'barangay' => 'required',
+            'city' => 'required',
+            'province' => 'required',
+            'region' => 'required',
+            'zipcode' => 'required',
         ]);
+        if($validatedData) {
+            $user = User::find(Auth::user()->id);
+            $user->civil_status = $request['civil_status'];
+            $user->dob = $request['dob'];
+            $user->save();
+            $address = new Address();
+            $address->user_id = Auth::user()->id;
+            $address->street = $request->street;
+            $address->barangay = $request->barangay;
+            $address->city = $request->city;
+            $address->province = $request->province;
+            $address->region = $request->region;
+            $address->zipcode = $request->zipcode;
+            $address->save();
+
+            return response()->json(['message' => 'Created successfully'], 200);
+        }
+
     }
 
     public function activateUser($id)

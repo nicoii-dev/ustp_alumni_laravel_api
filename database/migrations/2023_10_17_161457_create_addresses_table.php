@@ -16,8 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->unsigned()->nullable()->references('id')->on('users')->onDelete('cascade');
             $table->string('street');
             $table->string('barangay');
-            $table->string('city_municipality');
+            $table->string('city');
             $table->string('province');
+            $table->string('region');
             $table->string('zipcode');
             $table->timestamps();
         });

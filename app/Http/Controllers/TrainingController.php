@@ -17,31 +17,36 @@ class TrainingController extends Controller
         return response()->json($training, 200);
     }
 
+    public function getUserTraining()
+    {
+        $training = Training::where('user_id', Auth::user()->id)->get();
+        return response()->json($training, 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'duration' => 'required',
-            'institution' => 'required',
-        ]);
-
-        $trainingData = Training::where('user_id', Auth::user()->id)
-        ->where('title', $request['title'])
-        ->first();
-
-        if($trainingData !== null) {
-            return response()->json(["message" => "Training with this title is already saved."], 200);
+        // $request->validate([
+        //     'title' => 'required',
+        //     'duration' => 'required',
+        //     'institution' => 'required',
+        // ]);
+        foreach($request["data"] as $data){
+            $trainingData = Training::where('user_id', Auth::user()->id)
+            ->where('title', $data['title'])
+            ->first();
+            if($trainingData !== null) {
+                return response()->json(["message" => "Training with this title is already saved."], 422);
+            }
+            Training::create([
+                'user_id' => Auth::user()->id,
+                'title' => $data['title'],
+                'duration' => $data['duration'],
+                'institution' => $data['institution'],
+            ]);
         }
-
-        Training::create([
-            'user_id' => Auth::user()->id,
-            'title' => $request['title'],
-            'duration' => $request['duration'],
-            'institution' => $request['institution'],
-        ]);
         return response()->json(["message" => "Created successfully."], 200);
     }
 
@@ -59,28 +64,27 @@ class TrainingController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'title' => 'required',
-            'duration' => 'required',
-            'institution' => 'required',
-        ]);
-
-        $training = Training::where('title', $request['title'])
-        ->where('user_id', Auth::user()->id)
-        ->where('id', '!=', $id)
-        ->first();
-
-        if($training !== null) {
-            return response()->json(["message" => "Training with this title is already saved."], 422);
-        };
-
-        Training::where('id', $id)->update([
-            'title' => $request['title'],
-            'duration' => $request['duration'],
-            'institution' => $request['institution'],
-        ]);
-        $training = Training::find($id);
-        return response()->json(["message" => "Updated successfully.", "data" => $training], 200);
+        // $request->validate([
+        //     'title' => 'required',
+        //     'duration' => 'required',
+        //     'institution' => 'required',
+        // ]);
+        foreach($request["data"] as $data){
+            $trainingData = Training::where('user_id', Auth::user()->id)
+            ->where('title', $data['title'])
+            ->where('id', '!=', $id)
+            ->first();
+            if($trainingData !== null) {
+                return response()->json(["message" => "Training with this title is already saved."], 422);
+            }
+            Training::where('id', $id)->update([
+                'title' => $data['title'],
+                'duration' => $data['duration'],
+                'institution' => $data['institution'],
+            ]);
+            $training = Training::find($id);
+            return response()->json(["message" => "Updated successfully.", "data" => $training], 200);
+        }
     }
 
     /**

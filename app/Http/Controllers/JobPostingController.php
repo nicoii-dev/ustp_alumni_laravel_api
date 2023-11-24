@@ -28,10 +28,10 @@ class JobPostingController extends Controller
         ]);
         if($validatedData){
             try {
-            $job = new JobPosting();
-            $job->title = $request->title;
-            $job->description = $request->description;
-            $job->save();
+                $job = new JobPosting();
+                $job->title = $request->title;
+                $job->description = $request->description;
+                $job->save();
             if($request->hasFile('images')) {
                 foreach ($request->file('images') as $imagefile) {
                     $image = new JobPostingImages();
@@ -41,7 +41,7 @@ class JobPostingController extends Controller
                     $image->save();
                 }
             }
-            return response()->json(["message" => "Created successfully."], 200);
+                return response()->json(["message" => "Created successfully."], 200);
             } catch(\Exception $e)
             {
                 DB::rollBack();
@@ -74,7 +74,7 @@ class JobPostingController extends Controller
             if($jobs != null) {
                 return response()->json(["message" => "This title is already been taken."], 422);
             } else {
-                // delete previous images
+                // delete images
                 if($request->has('imagesToDelete')) {
                     DB::table('job_posting_images')->whereIn('id', $request['imagesToDelete'])->delete();
                 }

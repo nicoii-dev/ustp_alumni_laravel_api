@@ -51,7 +51,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::group(['prefix' => 'comment'], function () {
             Route::get('/', 'CommentController@index');
             Route::post('create', 'CommentController@store');
-            Route::post('view/{id}', 'CommentController@show');
+            Route::post('view/{id}', 'CommentController@showPostComments');
             Route::post('update/{id}', 'CommentController@update');
             Route::delete('delete/{id}', 'CommentController@destroy');
         });
@@ -81,6 +81,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
         Route::group(['prefix' => 'employment'], function () {
             Route::get('/', 'EmploymentController@index');
+            Route::get('/user', 'EmploymentController@userEmployment');
             Route::post('create', 'EmploymentController@store');
             Route::post('view/{id}', 'EmploymentController@show');
             Route::post('update/{id}', 'EmploymentController@update');
@@ -89,6 +90,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
         Route::group(['prefix' => 'training'], function () {
             Route::get('/', 'TrainingController@index');
+            Route::get('user', 'TrainingController@getUserTraining');
             Route::post('create', 'TrainingController@store');
             Route::post('view/{id}', 'TrainingController@show');
             Route::post('update/{id}', 'TrainingController@update');
@@ -113,9 +115,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::post('deactivate/{id}', 'UserController@deactivateUser');
         });
 
-        Route::group(['prefix' => 'lsi'], function () {
-            Route::get('/', 'LsiController@index');
-            Route::post('view/{id}', 'LsiController@show');
+        Route::group(['prefix' => 'profile'], function () {
+            Route::get('/', 'UserController@index');
+            Route::post('add', 'UserController@addProfileAddress');
         });
 
         Route::group(['prefix' => 'qrcode'], function () {

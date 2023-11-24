@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->unsigned()->nullable()->references('id')->on('users')->onDelete('cascade');
             $table->string('status');
+            $table->string('state_of_reasons')->nullable();
             $table->string('type')->nullable();
+            $table->string('present_occupation')->nullable();
+            $table->string('line_of_business')->nullable();
             $table->timestamps();
         });
     }

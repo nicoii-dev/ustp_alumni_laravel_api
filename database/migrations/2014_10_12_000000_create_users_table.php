@@ -47,6 +47,24 @@ return new class extends Migration
                 'password' => bcrypt('Default123'),
             )
         );
+
+        DB::table('users')->insert(
+            array(
+                'id' => '2',
+                'first_name' => 'arjohn',
+                'middle_name' => 'b',
+                'last_name' => 'ely',
+                'gender' => 'Male',
+                'civil_status' => 'Single',
+                'phone_number' => '09751234567',
+                'dob' => '2000/01/01',
+                'role' => 'user',
+                'status' => '1',
+                'is_verified' => '1',
+                'email' => 'arjohn.ely45@gmail.com',
+                'password' => bcrypt('111111'),
+            )
+        );
     }
 
     /**

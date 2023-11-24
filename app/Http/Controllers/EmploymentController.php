@@ -17,6 +17,12 @@ class EmploymentController extends Controller
         return response()->json( $employment, 200);
     }
 
+    public function userEmployment()
+    {
+        $employment = Employment::where("user_id", Auth::user()->id)->first();
+        return response()->json( $employment, 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -24,14 +30,32 @@ class EmploymentController extends Controller
     {
         $request->validate([
             'status' => 'required',
-            'type' => 'required'
+            // 'type' => 'required'
         ]);
+        if($request['status'] == 'yes') {
+            $request->validate([
+                'type' => 'required',
+                'present_occupation' => 'required',
+                'line_of_business' => 'required'
+            ]);
+            Employment::create([
+                'user_id' => Auth::user()->id,
+                'status' => $request['status'],
+                'type' => $request['type'],
+                'present_occupation' => $request['present_occupation'],
+                'line_of_business' => $request['line_of_business'],
+            ]);
+        } else {
+            $request->validate([
+                'state_of_reasons' => 'required'
+            ]);
+            Employment::create([
+                'user_id' => Auth::user()->id,
+                'status' => $request['status'],
+                'state_of_reasons' => $request['state_of_reasons'],
+            ]);
+        }
 
-        Employment::create([
-            'user_id' => Auth::user()->id,
-            'status' => $request['status'],
-            'type' => $request['type'],
-        ]);
         return response()->json(["message" => "Created successfully."], 200);
     }
 

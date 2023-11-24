@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Comment;
+use App\Models\CommentImages;
 
 class CommentController extends Controller
 {
@@ -13,7 +14,7 @@ class CommentController extends Controller
      */
     public function index()
     {
-        $comments = Comment::all();
+        $comments = Comment::with('commentImages')->with('commentOwner')->orderBy('created_at', 'desc')->get();;
         return response()->json($comments, 200);
     }
 
@@ -22,27 +23,40 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'post_id' => 'required',
-            'comment' => 'required'
+        $validatedData = $request->validate([
+            'post_id' => 'required'
         ]);
-
-        Comment::create([
-            'user_id' => Auth::user()->id,
-            'post_id' => $request['post_id'],
-            'comment' => $request['comment'],
-            'images' => $request['images'],
-        ]);
-
-        return response()->json(["message" => "Created successfully."], 200);
+        if($validatedData){
+            try {
+                $comment = new Comment();
+                $comment->user_id = Auth::user()->id;
+                $comment->post_id = $request->post_id;
+                $comment->comment = $request->comment;
+                $comment->save();
+            if($request->hasFile('images')) {
+                foreach ($request->file('images') as $imagefile) {
+                    $image = new CommentImages();
+                    $image->comment_id = $comment->id;
+                    $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+                    $image->url = $path;
+                    $image->save();
+                }
+            }
+                return response()->json(["message" => "Commented successfully."], 200);
+            } catch(\Exception $e)
+            {
+                DB::rollBack();
+                return response()->json(throw $e);
+            }
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function showPostComments(string $id)
     {
-        $comment = Comment::find($id);
+        $comment = Comment::where('post_id', $id)->with('commentImages')->with('commentOwner')->orderBy('created_at', 'desc')->get();
         return response()->json($comment, 200);
     }
 
@@ -51,16 +65,34 @@ class CommentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'comment' => 'required',
+        $validatedData = $request->validate([
+            'post_id' => 'required'
         ]);
-
-        Comment::where('id', $id)->update([
-            'comment' => $request['comment'],
-            'images' => $request['images'],
-        ]);
-        $comment = Comment::find($id);
-        return response()->json(["message" => "Updated successfully.", "data" => $comment], 200);
+        if($validatedData){
+            // delete images
+            if($request->has('imagesToDelete')) {
+                DB::table('comment_images')->whereIn('id', $request['imagesToDelete'])->delete();
+            }
+            try {
+                $comment = Comment::find($id);
+                $comment->comment = $request->comment;
+                $comment->save();
+            if($request->hasFile('images')) {
+                foreach ($request->file('images') as $imagefile) {
+                    $image = new CommentImages();
+                    $image->comment_id = $comment->id;
+                    $path = $imagefile->store('/images/resource', ['disk' =>   'public']);
+                    $image->url = $path;
+                    $image->save();
+                }
+            }
+                return response()->json(["message" => "Commented successfully."], 200);
+            } catch(\Exception $e)
+            {
+                DB::rollBack();
+                return response()->json(throw $e);
+            }
+        }
     }
 
     /**
