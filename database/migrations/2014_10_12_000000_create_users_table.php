@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -61,8 +62,8 @@ return new class extends Migration
                 'role' => 'user',
                 'status' => '1',
                 'is_verified' => '1',
-                'email' => 'arjohn.ely45@gmail.com',
-                'password' => bcrypt('111111'),
+                'email' => 'testuser@gmail.com',
+                'password' => bcrypt('Default123'),
             )
         );
     }
