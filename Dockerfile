@@ -50,3 +50,4 @@ RUN touch /usr/local/etc/php/conf.d/uploads.ini \
 
 RUN composer install
 CMD php artisan migrate --force && php artisan optimize && php artisan cache:clear && php artisan config:clear && php artisan serve --host=0.0.0.0 --port=$PORT
+RUN php artisan storage:link
