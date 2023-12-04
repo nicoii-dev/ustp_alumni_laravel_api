@@ -49,7 +49,7 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        $post = Post::find($id);
+        $post = Post::where('id', $id)->with('postImages')->with('postOwner')->with('postLikes')->first();
         return response()->json($post, 200);
     }
 
