@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use App\Models\Training;
+use App\Models\JobHistory;
+use App\Models\Employment;
+use App\Models\Address;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -49,4 +52,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function trainings() {
+        return $this->hasMany(Training::class, 'user_id', 'id');
+    }
+
+    public function jobHistory() {
+        return $this->hasMany(JobHistory::class, 'user_id', 'id');
+    }
+
+    public function employment() {
+        return $this->hasOne(Employment::class, 'user_id', 'id');
+    }
+
+    public function address() {
+        return $this->hasOne(Address::class, 'user_id', 'id');
+    }
 }

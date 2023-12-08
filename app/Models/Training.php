@@ -12,6 +12,8 @@ class Training extends Model
     protected $fillable = [
         'user_id',
         'title',
+        'topic',
+        'date',
         'duration',
         'institution',
     ];

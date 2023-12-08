@@ -14,7 +14,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::all();
+        return response()->json($users, 200);
     }
 
     /**
@@ -30,7 +31,8 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = User::where('id', $id)->with('trainings', 'jobHistory', 'employment', 'address')->first();
+        return response()->json($user, 200);
     }
 
     /**

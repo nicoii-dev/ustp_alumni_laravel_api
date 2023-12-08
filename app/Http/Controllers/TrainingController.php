@@ -42,7 +42,9 @@ class TrainingController extends Controller
             }
             Training::create([
                 'user_id' => Auth::user()->id,
+                'topic' => $data['topic'],
                 'title' => $data['title'],
+                'date' => $data['date'],
                 'duration' => $data['duration'],
                 'institution' => $data['institution'],
             ]);
@@ -78,7 +80,9 @@ class TrainingController extends Controller
                 return response()->json(["message" => "Training with this title is already saved."], 422);
             }
             Training::where('id', $id)->update([
+                'topic' => $data['topic'],
                 'title' => $data['title'],
+                'date' => $data['date'],
                 'duration' => $data['duration'],
                 'institution' => $data['institution'],
             ]);

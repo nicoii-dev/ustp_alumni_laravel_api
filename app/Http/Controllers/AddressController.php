@@ -44,7 +44,26 @@ class AddressController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'street' => 'required',
+            'barangay' => 'required',
+            'city' => 'required',
+            'province' => 'required',
+            'region' => 'required',
+            'zipcode' => 'required',
+        ]);
+        if($validatedData) {
+            $address = Address::find($id);
+            $address->street = $request->street;
+            $address->barangay = $request->barangay;
+            $address->city = $request->city;
+            $address->province = $request->province;
+            $address->region = $request->region;
+            $address->zipcode = $request->zipcode;
+            $address->save();
+
+            return response()->json(['message' => 'Updated successfully'], 200);
+        }
     }
 
     /**

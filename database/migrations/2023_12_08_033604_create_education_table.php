@@ -11,14 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trainings', function (Blueprint $table) {
+        Schema::create('education', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->unsigned()->nullable()->references('id')->on('users')->onDelete('cascade');
-            $table->string('topic');
-            $table->string('title');
-            $table->string('date');
-            $table->string('duration');
-            $table->string('institution');
+            $table->string('college');
+            $table->string('college_address');
+            $table->string('course');
+            $table->string('college_sy');
+            $table->string('high_school');
+            $table->string('high_address');
+            $table->string('high_sy');
+            $table->string('elem_school');
+            $table->string('elem_address');
+            $table->string('elem_sy');
             $table->timestamps();
         });
     }
@@ -28,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trainings');
+        Schema::dropIfExists('education');
     }
 };

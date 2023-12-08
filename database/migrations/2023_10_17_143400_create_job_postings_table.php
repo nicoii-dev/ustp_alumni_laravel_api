@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('job_postings', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
+            $table->string('company')->nullable();
+            $table->string('address')->nullable();
+            $table->string('experience')->nullable();
             $table->longText('description')->nullable();
             $table->timestamps();
         });

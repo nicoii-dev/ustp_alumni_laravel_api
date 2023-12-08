@@ -46,7 +46,11 @@ class AlumniController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if(DB::table("alumnis")->where('id',$id)->delete()){
+            return response()->json(["message" => "Deleted successfully."], 200);
+        }else{
+            return response()->json(["message" => "Something went wrong. Unable to delete."], 500);
+        }
     }
 
     public function importCSV(Request $request)
@@ -55,6 +59,9 @@ class AlumniController extends Controller
         $request->validate([
             'csv_data' => 'required|string',
         ]);
+
+        // delete all data first
+        Alumni::truncate();
         $csvDatas = json_decode($request->csv_data);
         //insert data into database update if exists else insert
         foreach ($csvDatas as $data) {

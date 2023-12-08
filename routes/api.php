@@ -79,6 +79,14 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::delete('delete/{id}', 'CourseController@destroy');
         });
 
+        Route::group(['prefix' => 'education'], function () {
+            Route::get('/', 'EducationController@index');
+            Route::post('create', 'EducationController@store');
+            Route::post('view/{id}', 'EducationController@show');
+            Route::post('update/{id}', 'EducationController@update');
+            Route::delete('delete/{id}', 'EducationController@destroy');
+        });
+
         Route::group(['prefix' => 'employment'], function () {
             Route::get('/', 'EmploymentController@index');
             Route::get('/user', 'EmploymentController@userEmployment');
@@ -86,6 +94,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::post('view/{id}', 'EmploymentController@show');
             Route::post('update/{id}', 'EmploymentController@update');
             Route::delete('delete/{id}', 'EmploymentController@destroy');
+        });
+
+        Route::group(['prefix' => 'job-history'], function () {
+            Route::get('/', 'JobHistoryController@index');
+            Route::get('/user', 'JobHistoryController@userEmployment');
+            Route::post('create', 'JobHistoryController@store');
+            Route::post('view/{id}', 'JobHistoryController@show');
+            Route::post('update/{id}', 'JobHistoryController@update');
+            Route::delete('delete/{id}', 'JobHistoryController@destroy');
         });
 
         Route::group(['prefix' => 'training'], function () {
