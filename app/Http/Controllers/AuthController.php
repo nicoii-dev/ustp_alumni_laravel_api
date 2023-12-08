@@ -54,7 +54,7 @@ class AuthController extends Controller
                 'is_verified' => 0
             ]);
             $token = $alumni->createToken('MyApp')->plainTextToken;
-            $link = "http://localhost:3000/verify/$alumni->email/token=$token";
+            $link = "https://ustpalumnilaravelapi-production.up.railway.app/verify/$alumni->email/token=$token";
             Mail::to($alumni->email)->send(new VerifyEmail($alumni, $link));
             DB::commit();
             return response()->json([
