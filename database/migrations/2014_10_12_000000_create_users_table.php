@@ -52,9 +52,9 @@ return new class extends Migration
         DB::table('users')->insert(
             array(
                 'id' => '2',
-                'first_name' => 'arjohn',
-                'middle_name' => 'b',
-                'last_name' => 'ely',
+                'first_name' => 'test first',
+                'middle_name' => 'test middle',
+                'last_name' => 'test last',
                 'gender' => 'Male',
                 'civil_status' => 'Single',
                 'phone_number' => '09751234567',
