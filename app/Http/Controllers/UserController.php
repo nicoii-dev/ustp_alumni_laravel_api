@@ -18,6 +18,52 @@ class UserController extends Controller
         return response()->json($users, 200);
     }
 
+    public function profile()
+    {
+        $user = User::where('id', Auth::user()->id)->with('address')->first();
+        return response()->json($user, 200);
+    }
+
+
+    public function update_profile(Request $request)
+    {
+        $validatedData = $request->validate([
+            'civil_status' => 'required',
+            'dob' => 'required',
+            'gender' => 'required',
+            'phone_number' => 'required',
+            'street' => 'required',
+            'barangay' => 'required',
+            'city' => 'required',
+            'province' => 'required',
+            'region' => 'required',
+            'zipcode' => 'required',
+        ]);
+        if($validatedData) {
+            $user = User::find(Auth::user()->id);
+            $user->civil_status = $request->civil_status;
+            $user->dob = $request->dob;
+            $user->phone_number = $request->phone_number;
+            $user->gender = $request->gender;
+            $user->save();
+            
+            $address = Address::where('user_id', Auth::user()->id)->first();
+            $address->street = $request->street;
+            $address->barangay = $request->barangay;
+            $address->barangay_code = $request->barangay_code;
+            $address->city = $request->city;
+            $address->city_code = $request->city_code;
+            $address->province = $request->province;
+            $address->province_code = $request->province_code;
+            $address->region = $request->region;
+            $address->region_code = $request->region_code;
+            $address->zipcode = $request->zipcode;
+            $address->save();
+
+            return response()->json(['message' => 'Updated Successfully'], 200);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -40,7 +86,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
     }
 
     /**
@@ -72,9 +118,13 @@ class UserController extends Controller
             $address->user_id = Auth::user()->id;
             $address->street = $request->street;
             $address->barangay = $request->barangay;
+            $address->barangay_code = $request->barangay_code;
             $address->city = $request->city;
+            $address->city_code = $request->city_code;
             $address->province = $request->province;
+            $address->province_code = $request->province_code;
             $address->region = $request->region;
+            $address->region_code = $request->region_code;
             $address->zipcode = $request->zipcode;
             $address->save();
 

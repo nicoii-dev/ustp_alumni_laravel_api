@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Alumni;
 
@@ -13,7 +12,7 @@ class AlumniController extends Controller
      */
     public function index()
     {
-        $announcement = Alumni::all();
+        $announcement = Alumni::with('user.trainings', 'user.jobHistory', 'user.employment', 'user.address')->get();
         return response()->json($announcement, 200);
     }
 
@@ -30,7 +29,8 @@ class AlumniController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = Alumni::where('id', $id)->with('user.trainings', 'user.jobHistory', 'user.employment', 'user.address')->first();
+        return response()->json($user, 200);
     }
 
     /**

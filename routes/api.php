@@ -117,6 +117,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::group(['prefix' => 'alumni'], function () {
             Route::get('/', 'AlumniController@index');
             Route::post('import-csv', 'AlumniController@importCSV');
+            Route::post('view/{id}', 'AlumniController@show');
         });
 
         Route::group(['prefix' => 'dashboard'], function () {
@@ -133,12 +134,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         });
 
         Route::group(['prefix' => 'profile'], function () {
-            Route::get('/', 'UserController@index');
+            Route::get('/', 'UserController@profile');
             Route::post('add', 'UserController@addProfileAddress');
-        });
-
-        Route::group(['prefix' => 'qrcode'], function () {
-            Route::post('view', 'QrDetailsController@show');
+            Route::post('update', 'UserController@update_profile');
         });
 
     });

@@ -17,4 +17,7 @@ class Alumni extends Model
         'year_graduated'
     ];
 
+    public function user() {
+        return $this->hasOne(User::class, 'alumni_id', 'id');
+    }
 }

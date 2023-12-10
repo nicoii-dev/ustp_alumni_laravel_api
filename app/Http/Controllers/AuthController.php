@@ -42,6 +42,7 @@ class AuthController extends Controller
             return response()->json(["message" => "No Alumni Record"], 500);
         } else {
             $alumni = User::create([
+                'alumni_id' => $alumniData->id,
                 'first_name' => $request['first_name'],
                 'middle_name' => $request['middle_name'],
                 'last_name' => $request['last_name'],
