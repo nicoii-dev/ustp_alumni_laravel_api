@@ -5,17 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Employment extends Model
+class Achivement extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'status',
-        'type',
-        'state_of_reasons',
-        'present_occupation',
-        'line_of_business',
-        'profession'
+        'title',
+        'category',
+        'description',
+        'date',
     ];
 }

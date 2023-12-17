@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employments', function (Blueprint $table) {
+        Schema::create('achivements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->unsigned()->nullable()->references('id')->on('users')->onDelete('cascade');
-            $table->string('status');
-            $table->string('state_of_reasons')->nullable();
-            $table->string('type')->nullable();
-            $table->string('present_occupation')->nullable();
-            $table->string('line_of_business')->nullable();
-            $table->string('profession')->nullable();
+            $table->string('title');
+            $table->string('category');
+            $table->string('date');
+            $table->string('description')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employments');
+        Schema::dropIfExists('achivements');
     }
 };

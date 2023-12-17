@@ -29,7 +29,7 @@ class DashboardController extends Controller
             ->having('count', '>', 1)
             ->get();
 
-        return response()->json(["users" => $users, "course" => $courses,  "alumni" => $alumni, 'active' => $active, 'deactived' => $deactivated], 200);
+        return response()->json(["users" => $users, "course" => $courses,  "alumni" => $alumni, 'active' => $active, 'deactivated' => $deactivated], 200);
     }
 
     /**

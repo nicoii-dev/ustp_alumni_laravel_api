@@ -19,7 +19,7 @@ class TrainingController extends Controller
 
     public function getUserTraining()
     {
-        $training = Training::where('user_id', Auth::user()->id)->get();
+        $training = Training::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
         return response()->json($training, 200);
     }
 

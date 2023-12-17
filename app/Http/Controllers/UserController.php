@@ -77,8 +77,15 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::where('id', $id)->with('trainings', 'jobHistory', 'employment', 'address')->first();
+        $user = User::where('id', $id)->with('trainings', 'jobHistory', 'employment', 'address', 'education')->first();
         return response()->json($user, 200);
+    }
+
+    public function uploadPic(Request $request, string $id)
+    {
+        $user = User::find($id);
+        $user->image = $request->image->store('/images/resource', ['disk' =>   'public']);
+        $user->save();
     }
 
     /**

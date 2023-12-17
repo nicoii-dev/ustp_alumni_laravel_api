@@ -11,6 +11,7 @@ use App\Models\Training;
 use App\Models\JobHistory;
 use App\Models\Employment;
 use App\Models\Address;
+use App\Models\Education;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -68,5 +69,9 @@ class User extends Authenticatable
 
     public function address() {
         return $this->hasOne(Address::class, 'user_id', 'id');
+    }
+
+    public function education() {
+        return $this->hasOne(Education::class, 'user_id', 'id');
     }
 }

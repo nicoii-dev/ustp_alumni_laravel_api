@@ -36,7 +36,8 @@ class EmploymentController extends Controller
             $request->validate([
                 'type' => 'required',
                 'present_occupation' => 'required',
-                'line_of_business' => 'required'
+                'line_of_business' => 'required',
+                'profession' => 'required'
             ]);
             Employment::create([
                 'user_id' => Auth::user()->id,
@@ -44,6 +45,7 @@ class EmploymentController extends Controller
                 'type' => $request['type'],
                 'present_occupation' => $request['present_occupation'],
                 'line_of_business' => $request['line_of_business'],
+                'profession' => $request['profession'],
             ]);
         } else {
             $request->validate([
@@ -75,13 +77,32 @@ class EmploymentController extends Controller
     {
         $request->validate([
             'status' => 'required',
-            'type' => 'required'
+            // 'type' => 'required'
         ]);
 
-        Employment::where('id', $id)->update([
-            'status' => $request['status'],
-            'type' => $request['type'],
-        ]);
+        if($request['status'] == 'yes') {
+            $request->validate([
+                'type' => 'required',
+                'present_occupation' => 'required',
+                'line_of_business' => 'required',
+                'profession' => 'required'
+            ]);
+            Employment::where('id', $id)->update([
+                'status' => $request['status'],
+                'type' => $request['type'],
+                'present_occupation' => $request['present_occupation'],
+                'line_of_business' => $request['line_of_business'],
+                'profession' => $request['profession'],
+            ]);
+        } else {
+            $request->validate([
+                'state_of_reasons' => 'required'
+            ]);
+            Employment::where('id', $id)->update([
+                'status' => $request['status'],
+                'state_of_reasons' => $request['state_of_reasons'],
+            ]);
+        }
         $employment = Employment::find($id);
         return response()->json(["message" => "Updated successfully.", "data" => $employment], 200);
     }
