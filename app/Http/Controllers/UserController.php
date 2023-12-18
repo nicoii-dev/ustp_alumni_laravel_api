@@ -45,6 +45,7 @@ class UserController extends Controller
             $user->dob = $request->dob;
             $user->phone_number = $request->phone_number;
             $user->gender = $request->gender;
+            $user->image = $request->image->store('/images/resource', ['disk' => 'public']);
             $user->save();
             
             $address = Address::where('user_id', Auth::user()->id)->first();
@@ -77,7 +78,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::where('id', $id)->with('trainings', 'jobHistory', 'employment', 'address', 'education')->first();
+        $user = User::where('id', $id)->with('trainings', 'jobHistory', 'employment', 'address', 'education', 'achievements')->first();
         return response()->json($user, 200);
     }
 
@@ -120,6 +121,7 @@ class UserController extends Controller
             $user = User::find(Auth::user()->id);
             $user->civil_status = $request['civil_status'];
             $user->dob = $request['dob'];
+            $user->image = $request->image->store('/images/resource', ['disk' => 'public']);
             $user->save();
             $address = new Address();
             $address->user_id = Auth::user()->id;

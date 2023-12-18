@@ -12,7 +12,7 @@ class AlumniController extends Controller
      */
     public function index()
     {
-        $announcement = Alumni::with('user.trainings', 'user.jobHistory', 'user.employment', 'user.address', 'user.education')->get();
+        $announcement = Alumni::with('user.trainings', 'user.jobHistory', 'user.employment', 'user.address', 'user.education', 'user.achievements')->get();
         return response()->json($announcement, 200);
     }
 

@@ -114,6 +114,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::delete('delete/{id}', 'TrainingController@destroy');
         });
 
+        Route::group(['prefix' => 'achievements'], function () {
+            Route::get('/', 'AchivementsController@index');
+            Route::post('create', 'AchivementsController@store');
+            Route::post('view/{id}', 'AchivementsController@show');
+            Route::post('update/{id}', 'AchivementsController@update');
+            Route::delete('delete/{id}', 'AchivementsController@destroy');
+        });
+
+
         Route::group(['prefix' => 'alumni'], function () {
             Route::get('/', 'AlumniController@index');
             Route::post('import-csv', 'AlumniController@importCSV');

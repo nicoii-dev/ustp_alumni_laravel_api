@@ -13,8 +13,8 @@ class AchivementsController extends Controller
      */
     public function index()
     {
-        $employment = Achivement::where("user_id", Auth::user()->id)->first();
-        return response()->json( $employment, 200);
+        $achievements = Achivement::where("user_id", Auth::user()->id)->get();
+        return response()->json($achievements, 200);
     }
 
     /**
@@ -25,6 +25,7 @@ class AchivementsController extends Controller
         $achivementData = $request->validate([
             'title' => 'required',
             'category' => 'required',
+            'date' => 'required',
             'description' => 'required',
             // 'image' => 'required',
         ]);
@@ -33,6 +34,7 @@ class AchivementsController extends Controller
             $achivement->user_id = Auth::user()->id;
             $achivement->title = $request->title;
             $achivement->category = $request->category;
+            $achivement->date = $request->date;
             $achivement->description = $request->description;
             $achivement->image = $request->image;
             $achivement->save();
@@ -58,15 +60,17 @@ class AchivementsController extends Controller
             'title' => 'required',
             'category' => 'required',
             'description' => 'required',
-            'image' => 'required',
+            'date' => 'required',
+            // 'image' => 'required',
         ]);
         if($validatedData) {
-            $education = Achivement::find($id);
-            $education->college = $request->college;
-            $education->college_address = $request->college_address;
-            $education->course = $request->course;
-            $education->college_sy = $request->college_sy;
-            $education->save();
+            $achivement = Achivement::find($id);
+            $achivement->title = $request->title;
+            $achivement->category = $request->category;
+            $achivement->date = $request->date;
+            $achivement->description = $request->description;
+            $achivement->image = $request->image;
+            $achivement->save();
 
             return response()->json(['message' => 'Updated Successfully'], 200);
         }

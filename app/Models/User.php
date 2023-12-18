@@ -12,6 +12,7 @@ use App\Models\JobHistory;
 use App\Models\Employment;
 use App\Models\Address;
 use App\Models\Education;
+use App\Models\Achivement;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -34,6 +35,7 @@ class User extends Authenticatable
         'status',
         'email',
         'password',
+        'image'
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -73,5 +75,9 @@ class User extends Authenticatable
 
     public function education() {
         return $this->hasOne(Education::class, 'user_id', 'id');
+    }
+
+    public function achievements() {
+        return $this->hasMany(Achivement::class, 'user_id', 'id');
     }
 }
