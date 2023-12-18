@@ -45,7 +45,9 @@ class UserController extends Controller
             $user->dob = $request->dob;
             $user->phone_number = $request->phone_number;
             $user->gender = $request->gender;
-            $user->image = $request->image->store('/images/resource', ['disk' => 'public']);
+            if($request->hasFile('image')) {
+                $user->image = $request->image->store('/images/resource', ['disk' => 'public']);
+            }
             $user->save();
             
             $address = Address::where('user_id', Auth::user()->id)->first();
