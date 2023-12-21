@@ -49,7 +49,7 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        $post = Post::where('id', $id)->with('postImages')->with('postOwner')->with('postLikes')->first();
+        $post = Post::where('id', $id)->with('postImages')->with('postOwner')->with('postLikes')->with('postComments')->with('postComments.commentOwner')->first();
         return response()->json($post, 200);
     }
 

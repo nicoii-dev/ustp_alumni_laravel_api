@@ -50,7 +50,8 @@ class JobHistoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $jobHistory = JobHistory::find($id);
+        return response()->json($jobHistory, 200);
     }
 
     /**
@@ -58,7 +59,26 @@ class JobHistoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'company' => 'required',
+            'position' => 'required',
+            'date_started' => 'required',
+            'date_ended' => 'required',
+            'salary' => 'required',
+            'status' => 'required',
+        ]);
+        if($validatedData) {
+            $jobHistory = JobHistory::find($id);
+            $jobHistory->company = $request->company;
+            $jobHistory->position = $request->position;
+            $jobHistory->date_started = $request->date_started;
+            $jobHistory->date_ended = $request->date_ended;
+            $jobHistory->salary = $request->salary;
+            $jobHistory->status = $request->status;
+            $jobHistory->save();
+
+            return response()->json(['message' => 'Updated Successfully'], 200);
+        }
     }
 
     /**
@@ -66,6 +86,10 @@ class JobHistoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if(DB::table("job_histories")->where('id',$id)->delete()){
+            return response()->json(["message" => "Deleted successfully."], 200);
+        }else{
+            return response()->json(["message" => "Something went wrong. Unable to delete."], 500);
+        }
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\PostImages;
 use App\Models\User;
 use App\Models\Like;
+use App\Models\Comment;
 
 class Post extends Model
 {
@@ -20,16 +21,21 @@ class Post extends Model
 
     public function postImages()
     {
-    return $this->hasMany(PostImages::class, 'post_id', 'id');
+        return $this->hasMany(PostImages::class, 'post_id', 'id');
     }
 
     public function postOwner()
     {
-    return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function postLikes()
     {
-    return $this->hasMany(Like::class, 'post_id', 'id');
+        return $this->hasMany(Like::class, 'post_id', 'id');
+    }
+
+    public function postComments()
+    {
+        return $this->hasMany(Comment::class, 'post_id', 'id');
     }
 }
