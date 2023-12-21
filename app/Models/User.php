@@ -13,6 +13,7 @@ use App\Models\Employment;
 use App\Models\Address;
 use App\Models\Education;
 use App\Models\Achivement;
+use App\Models\Alumni;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -79,5 +80,9 @@ class User extends Authenticatable
 
     public function achievements() {
         return $this->hasMany(Achivement::class, 'user_id', 'id');
+    }
+
+    public function alumni() {
+        return $this->belongsTo(Alumni::class, 'alumni_id', 'id');
     }
 }

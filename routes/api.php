@@ -148,6 +148,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::post('update', 'UserController@update_profile');
         });
 
+        Route::group(['prefix' => 'reports'], function () {
+            Route::get('/', 'ReportsController@index');
+            Route::post('add', 'UserController@addProfileAddress');
+            Route::post('update', 'UserController@update_profile');
+        });
+
     });
 
 });
