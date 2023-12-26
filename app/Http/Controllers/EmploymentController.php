@@ -93,6 +93,7 @@ class EmploymentController extends Controller
                 'present_occupation' => $request['present_occupation'],
                 'line_of_business' => $request['line_of_business'],
                 'profession' => $request['profession'],
+                'state_of_reasons' => []
             ]);
         } else {
             $request->validate([
@@ -101,6 +102,10 @@ class EmploymentController extends Controller
             Employment::where('id', $id)->update([
                 'status' => $request['status'],
                 'state_of_reasons' => $request['state_of_reasons'],
+                'type' => '',
+                'present_occupation' => '',
+                'line_of_business' => '',
+                'profession' => '',
             ]);
         }
         $employment = Employment::find($id);

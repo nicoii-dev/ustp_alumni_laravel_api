@@ -146,6 +146,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/', 'UserController@profile');
             Route::post('add', 'UserController@addProfileAddress');
             Route::post('update', 'UserController@update_profile');
+            Route::post('update-pic', 'UserController@update_profile_pic');
         });
 
         Route::group(['prefix' => 'reports'], function () {

@@ -24,6 +24,42 @@ class UserController extends Controller
         return response()->json($user, 200);
     }
 
+    public function addProfileAddress(Request $request)
+    {
+        $validatedData = $request->validate([
+            'civil_status' => 'required',
+            'dob' => 'required',
+            'street' => 'required',
+            'barangay' => 'required',
+            'city' => 'required',
+            'province' => 'required',
+            'region' => 'required',
+            'zipcode' => 'required',
+        ]);
+        if($validatedData) {
+            $user = User::find(Auth::user()->id);
+            $user->civil_status = $request['civil_status'];
+            $user->dob = $request['dob'];
+            $user->image = $request->image->store('/images/resource', ['disk' => 'public']);
+            $user->save();
+            $address = new Address();
+            $address->user_id = Auth::user()->id;
+            $address->street = $request->street;
+            $address->barangay = $request->barangay;
+            $address->barangay_code = $request->barangay_code;
+            $address->city = $request->city;
+            $address->city_code = $request->city_code;
+            $address->province = $request->province;
+            $address->province_code = $request->province_code;
+            $address->region = $request->region;
+            $address->region_code = $request->region_code;
+            $address->zipcode = $request->zipcode;
+            $address->save();
+
+            return response()->json(['message' => 'Created successfully'], 200);
+        }
+
+    }
 
     public function update_profile(Request $request)
     {
@@ -67,6 +103,22 @@ class UserController extends Controller
         }
     }
 
+    public function update_profile_pic(Request $request)
+    {
+        $validatedData = $request->validate([
+            'image' => 'required',
+        ]);
+        if($validatedData) {
+            $user = User::find(Auth::user()->id);
+            if($request->hasFile('image')) {
+                $user->image = $request->image->store('/images/resource', ['disk' => 'public']);
+            }
+            $user->save();
+
+            return response()->json(['data' => $user, 'message' => 'Updated Successfully'], 200);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -105,43 +157,6 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function addProfileAddress(Request $request)
-    {
-        $validatedData = $request->validate([
-            'civil_status' => 'required',
-            'dob' => 'required',
-            'street' => 'required',
-            'barangay' => 'required',
-            'city' => 'required',
-            'province' => 'required',
-            'region' => 'required',
-            'zipcode' => 'required',
-        ]);
-        if($validatedData) {
-            $user = User::find(Auth::user()->id);
-            $user->civil_status = $request['civil_status'];
-            $user->dob = $request['dob'];
-            $user->image = $request->image->store('/images/resource', ['disk' => 'public']);
-            $user->save();
-            $address = new Address();
-            $address->user_id = Auth::user()->id;
-            $address->street = $request->street;
-            $address->barangay = $request->barangay;
-            $address->barangay_code = $request->barangay_code;
-            $address->city = $request->city;
-            $address->city_code = $request->city_code;
-            $address->province = $request->province;
-            $address->province_code = $request->province_code;
-            $address->region = $request->region;
-            $address->region_code = $request->region_code;
-            $address->zipcode = $request->zipcode;
-            $address->save();
-
-            return response()->json(['message' => 'Created successfully'], 200);
-        }
-
     }
 
     public function activateUser($id)
