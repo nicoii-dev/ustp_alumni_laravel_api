@@ -38,30 +38,40 @@ class AuthController extends Controller
         ->where('last_name', $request['last_name'])
         ->first();
 
+        $userData = User::where('first_name', $request['first_name'])
+        ->where('middle_name', $request['middle_name'])
+        ->where('last_name', $request['last_name'])
+        ->first();
+
         if($alumniData == null) {
-            return response()->json(["message" => "No Alumni Record"], 500);
-        } else {
-            $alumni = User::create([
-                'alumni_id' => $alumniData->id,
-                'first_name' => $request['first_name'],
-                'middle_name' => $request['middle_name'],
-                'last_name' => $request['last_name'],
-                'gender' => $request['gender'],
-                'phone_number' => $request['phone_number'],
-                'email' => $request['email'],
-                'password' => bcrypt($request['password']),
-                'role' => 'user',
-                'status' => 1,
-                'is_verified' => 0
-            ]);
-            $token = $alumni->createToken('MyApp')->plainTextToken;
-            $link = "https://ustp-alumni-react-web-git-main-nicoii-dev.vercel.app/verify/$alumni->email/token=$token";
-            Mail::to($alumni->email)->send(new VerifyEmail($alumni, $link));
-            DB::commit();
-            return response()->json([
-                "message" => "Register successfully"
-            ], 200);
+            return response()->json(["message" => "No Alumni Record!"], 500);
         }
+
+        if($userData != null) {
+            return response()->json(["message" => "Alumni is already registered!"], 500);
+        }
+
+        $alumni = User::create([
+            'alumni_id' => $alumniData->id,
+            'first_name' => $request['first_name'],
+            'middle_name' => $request['middle_name'],
+            'last_name' => $request['last_name'],
+            'gender' => $request['gender'],
+            'phone_number' => $request['phone_number'],
+            'email' => $request['email'],
+            'password' => bcrypt($request['password']),
+            'role' => 'user',
+            'status' => 1,
+            'is_verified' => 0
+        ]);
+        $token = $alumni->createToken('MyApp')->plainTextToken;
+        $link = "https://ustp-alumni-react-web-git-main-nicoii-dev.vercel.app/verify/$alumni->email/token=$token";
+        Mail::to($alumni->email)->send(new VerifyEmail($alumni, $link));
+        DB::commit();
+        return response()->json([
+            "message" => "Register successfully"
+        ], 200);
+        
 
     }
 
