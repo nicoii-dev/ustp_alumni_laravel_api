@@ -15,8 +15,12 @@ class ReportsController extends Controller
         $total_unemployed = Employment::where('status', 'no')->count();
         $employed = Employment::where('status', 'yes')->with('user.alumni')->get();
         $total_employed = Employment::where('status', 'yes')->count();
+        $courses = DB::table('alumnis')
+        ->select('course', DB::raw('COUNT(*) as `count`'))
+        ->groupBy('course')
+        ->get();
         
-        return response()->json(["unemployed" => $unemployed, "employed" => $employed, "total_unemployed" => $total_unemployed, "total_employed" => $total_employed], 200);
+        return response()->json(["unemployed" => $unemployed, "employed" => $employed, "total_unemployed" => $total_unemployed, "total_employed" => $total_employed, "courses" => $courses], 200);
     }
 
     /**
