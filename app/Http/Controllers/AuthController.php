@@ -65,7 +65,7 @@ class AuthController extends Controller
             'is_verified' => 0
         ]);
         $token = $alumni->createToken('MyApp')->plainTextToken;
-        $link = "https://ustp-alumni-react-web-git-main-nicoii-dev.vercel.app/verify/$alumni->email/token=$token";
+        $link = "https://ustp-alumni-react-web.vercel.app/verify/$alumni->email/token=$token";
         Mail::to($alumni->email)->send(new VerifyEmail($alumni, $link));
         DB::commit();
         return response()->json([
