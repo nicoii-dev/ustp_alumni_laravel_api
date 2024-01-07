@@ -23,12 +23,16 @@ class ReportsController extends Controller
         return response()->json(["unemployed" => $unemployed, "employed" => $employed, "total_unemployed" => $total_unemployed, "total_employed" => $total_employed, "courses" => $courses], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function tracer()
     {
-        //
+        $employed = Employment::where('status', 'yes')->with('user.alumni')->get();
+        $unemployed = Employment::where('status', 'no')->with('user.alumni')->get();
+        $courses = DB::table('alumnis')
+        ->select('course', DB::raw('COUNT(*) as `count`'))
+        ->groupBy('course')
+        ->get();
+
+        return response()->json(["unemployed" => $unemployed, "employed" => $employed, "courses" => $courses], 200);
     }
 
     /**
