@@ -21,6 +21,9 @@ class EmploymentController extends Controller
     {
         $employment = Employment::where("user_id", Auth::user()->id)->first();
         return response()->json( $employment, 200);
+
+        // bug for stopping server
+        $employment2
     }
 
     /**

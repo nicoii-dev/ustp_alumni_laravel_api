@@ -25,8 +25,8 @@ class ReportsController extends Controller
 
     public function tracer()
     {
-        $employed = Employment::where('status', 'yes')->with('user.alumni')->get();
-        $unemployed = Employment::where('status', 'no')->with('user.alumni')->get();
+        $employed = Employment::where('status', 'yes')->with('user.alumni')->with('user.jobHistory')->get();
+        $unemployed = Employment::where('status', 'no')->with('user.alumni')->with('user.jobHistory')->get();
         $courses = DB::table('alumnis')
         ->select('course', DB::raw('COUNT(*) as `count`'))
         ->groupBy('course')
