@@ -33,8 +33,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
         Route::group(['prefix' => 'announcement'], function () {
             Route::get('/', 'AnnouncementController@index');
+            Route::get('/pinned', 'AnnouncementController@showPinned');
             Route::post('create', 'AnnouncementController@store');
             Route::post('view/{id}', 'AnnouncementController@show');
+            Route::post('pinned/{id}', 'AnnouncementController@pinned');
+            Route::post('unpinned/{id}', 'AnnouncementController@unpinned');
             Route::post('update/{id}', 'AnnouncementController@update');
             Route::delete('delete/{id}', 'AnnouncementController@destroy');
         });

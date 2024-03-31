@@ -105,6 +105,30 @@ class AnnouncementController extends Controller
         }
     }
 
+    public function showPinned()
+    {
+        $announcement = Announcement::where('pinned', '=', '1')->with('announcementImages')->orderBy('created_at', 'desc')->get();
+        return response()->json($announcement, 200);
+    }
+
+
+    public function pinned(string $id)
+    {
+        $announcement = Announcement::find($id);
+        $announcement->pinned = 1;
+        $announcement->save();
+        return response()->json('Pinned successfully.', 200);
+    }
+
+    public function unpinned(string $id)
+    {
+        $announcement = Announcement::find($id);
+        $announcement->pinned = 0;
+        $announcement->save();
+        return response()->json('Pinned successfully.', 200);
+    }
+
+
     /**
      * Remove the specified resource from storage.
      */
