@@ -107,15 +107,15 @@ class AnnouncementController extends Controller
 
     public function showPinned()
     {
-        $announcement = Announcement::where('pinned', '=', '1')->with('announcementImages')->orderBy('created_at', 'desc')->get();
+        $announcement = Announcement::where('pinned', '=', '1')->where('user_id', '=', Auth::user()->id)->with('announcementImages')->orderBy('created_at', 'desc')->get();
         return response()->json($announcement, 200);
     }
-
 
     public function pinned(string $id)
     {
         $announcement = Announcement::find($id);
         $announcement->pinned = 1;
+        $announcement->user_id = Auth::user()->id;
         $announcement->save();
         return response()->json('Pinned successfully.', 200);
     }
