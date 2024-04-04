@@ -130,7 +130,7 @@ class AnnouncementController extends Controller
     public function unpinned(string $id)
     {
         if(DB::table("pinned_announcements")->where('id',$id)->delete()){
-            return response()->json(["message" => "Deleted successfully."], 200);
+            return response()->json(["message" => "Unpinned successfully."], 200);
         }else{
             return response()->json(["message" => "Something went wrong. Unable to delete."], 500);
         }
