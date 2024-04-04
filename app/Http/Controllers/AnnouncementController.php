@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Announcement;
 use App\Models\AnnouncementImages;
-
+use App\Models\PinnedAnnouncements;
 class AnnouncementController extends Controller
 {
     /**
@@ -107,25 +107,33 @@ class AnnouncementController extends Controller
 
     public function showPinned()
     {
-        $announcement = Announcement::where('pinned', '=', '1')->where('user_id', '=', Auth::user()->id)->with('announcementImages')->orderBy('created_at', 'desc')->get();
+        $announcement = PinnedAnnouncements::where('user_id', '=', Auth::user()->id)->with('announcement')->with('announcementImages')->orderBy('created_at', 'desc')->get();
         return response()->json($announcement, 200);
     }
 
     public function pinned(string $id)
     {
-        $announcement = Announcement::find($id);
-        $announcement->pinned = 1;
-        $announcement->user_id = Auth::user()->id;
-        $announcement->save();
-        return response()->json('Pinned successfully.', 200);
+        $pinnedAlready = PinnedAnnouncements::where('user_id', '=', Auth::user()->id)
+        ->where('announcement_id', '=', $id)
+        ->first();
+        if($pinnedAlready != null) {
+            return response()->json(["message" => "This announcement is already pinned."], 422);
+        } else {
+            $announcement = new PinnedAnnouncements();
+            $announcement->announcement_id = $id;
+            $announcement->user_id = Auth::user()->id;
+            $announcement->save();
+            return response()->json('Pinned successfully.', 200);
+        }
     }
 
     public function unpinned(string $id)
     {
-        $announcement = Announcement::find($id);
-        $announcement->pinned = 0;
-        $announcement->save();
-        return response()->json('Pinned successfully.', 200);
+        if(DB::table("pinned_announcements")->where('id',$id)->delete()){
+            return response()->json(["message" => "Deleted successfully."], 200);
+        }else{
+            return response()->json(["message" => "Something went wrong. Unable to delete."], 500);
+        }
     }
 
 
