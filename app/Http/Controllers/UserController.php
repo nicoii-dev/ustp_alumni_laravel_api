@@ -40,7 +40,9 @@ class UserController extends Controller
             $user = User::find(Auth::user()->id);
             $user->civil_status = $request['civil_status'];
             $user->dob = $request['dob'];
-            $user->image = $request->image->store('/images/resource', ['disk' => 'public']);
+            if($request->image != '') {
+                $user->image = $request->image->store('/images/resource', ['disk' => 'public']);
+            }
             $user->save();
             $address = new Address();
             $address->user_id = Auth::user()->id;
